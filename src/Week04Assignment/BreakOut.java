@@ -40,16 +40,38 @@ public class BreakOut extends GraphicsProgram {
 	/** Number of turns */
 	private static final int NTURNS = 3;
 	
+	GRect paddle;
 	
 	public void run() {
 		setUpGame();
+		addMouseListeners();
 	}
 	
 	private void setUpGame() {
 		setUpBricks();
+		createPaddle();
 	}
-	
-	
+	/**Method: mouseMoved
+	 * 
+	 * Gets triggered when the mouse enters the game window
+	 * and move in the window
+	 */
+	public void mouseMoved(MouseEvent e) {
+		if(e.getX() < WIDTH - PADDLE_WIDTH) {
+			paddle.setLocation(e.getX(), HEIGHT - PADDLE_Y_OFFSET);
+		}
+	}
+	/** Method: createPaddle
+	 * 
+	 * Creates the paddle
+	 */
+	private void createPaddle() {
+		paddle = new GRect((WIDTH - PADDLE_WIDTH)/2, HEIGHT - PADDLE_Y_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT);
+		paddle.setFilled(true);
+		paddle.setColor(Color.BLACK);
+		
+		add(paddle);
+	}
 	
 	private void setUpBricks() {
 		
@@ -58,9 +80,9 @@ public class BreakOut extends GraphicsProgram {
 			createRowOfBricks(getColor(i), BRICK_Y_OFFSET + i * (BRICK_HEIGHT + BRICK_SEP));
 		}
 	}
-	/*Method: getColor */
-	/**
-	 * returns appropriate color for rows
+	/*Method: getColor 
+	 * 
+	 * returns appropriate color for each row
 	 */
 	private Color getColor(int rowNum) {
 		switch(rowNum) {
@@ -89,12 +111,12 @@ public class BreakOut extends GraphicsProgram {
 		}
 	}
 	
-	/*Method: createRowOfBricks*/
-	/**
+	/*Method: createRowOfBricks
+	* 
 	* Create a row of bricks
 	*/
 	private void createRowOfBricks(Color c, int y) {
-		/* Keeps track of the position of the breick*/
+		/* Keeps track of the position of the breick in x axies*/
 		int x = BRICK_SEP;
 		
 		/* Creates a row of bricks */
