@@ -30,8 +30,7 @@ private static final int NBRICK_ROWS = 10;
 /** Separation between bricks */
 private static final int BRICK_SEP = 4;
 /** Width of a brick */
-private static final int BRICK_WIDTH =
-(WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
+private static final int BRICK_WIDTH = (WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
 /** Height of a brick */
 private static final int BRICK_HEIGHT = 8;
 /** Radius of the ball in pixels */
