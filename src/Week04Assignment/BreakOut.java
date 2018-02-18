@@ -40,10 +40,17 @@ public class BreakOut extends GraphicsProgram {
 	/** Number of turns */
 	private static final int NTURNS = 3;
 	
+	
 	GRect paddle;
 	GOval ball;
-	private double vx, vy;
+	private double vx, vy, x, y; //vy represents the velocity of the ball
 	private RandomGenerator rgen = RandomGenerator.getInstance();
+	boolean leftWallHit = false;
+	boolean RightWallHit = false;
+	boolean bottomUpMode = false;
+	boolean topDownMode = true;
+	boolean brickHit = false;
+	int count;
 	
 	public void run() {
 		setUpGame();
@@ -51,54 +58,145 @@ public class BreakOut extends GraphicsProgram {
 	}
 	
 	private void playGame() {
-		moveBall();
+		vx =  rgen.nextDouble(-3.0, +3.0);
+		startGame();
 	}
 	
-	private void moveBall() {
-		vx =  rgen.nextDouble(-3.0, +3.0);
-		vx = +3.0;
-		/*if(vx > 0) {
+	private void setValocity() {
+		/** Initial moving of the ball*/
+		if(vx > 0) {//checks the vx is negative or positive, if positiv then the velocity should be positive
 			vy = +3.0;
-			moveBallTopDown();
-		}else if(vx < 0) {
+		}else if(vx < 0) { // if negative the velocity should be negative
 			vy = -3.0;
-			moveBallTopDown();
-		}*/
-		vy = -3.0;
-		moveBallBotomUp();
+		}
+	}
+	
+	
+	private void startGame() {
+		x = ball.getX();
+		y = ball.getY();
+		setValocity();
+		int time = 80;
+		count = 0;
+		/**Moves the ball towerds the wall or paddle*/
+		while(x < WIDTH-(BALL_RADIUS) && x > 0) { 
+			if(bottomUpMode) {
+				setXYForBotomUpMove();
+			}else if(topDownMode){
+				setXYForTopDownMove();
+			}
+			
+			ball.setLocation(x, y);
+			pause(time);
+			if(time > 10) {
+				time --;
+			}
+			
+			checkBallPosition();
+			checkForCollision();
+			bounceTheBall();
+			
+			if(y > HEIGHT) {
+				printEndingMessage();
+				return;
+			}
+			if(count == 100) {
+				printEndingMessage();
+				return;
+			}
+		}
+	}
+	
+	private void bounceTheBall() {
+		if(RightWallHit) {
+			bounceIt();
+		}else if(leftWallHit) {
+			bounceIt();
+		}else if(brickHit) {
+			if(bottomUpMode) {
+				bottomUpMode = false;
+				topDownMode = true;
+				brickHit = false;
+			}else {
+				bottomUpMode = true;
+				topDownMode = false;
+				brickHit = false;
+			}
+		}
+	}
+	
+	private void printEndingMessage() {
+		if(y > HEIGHT) {
+			println("Game Over");
+			GLabel line = new GLabel("Game Over");
+			line.setFont("Times-22");
+			line.setColor(Color.RED);
+			add(line, getWidth()/2 - line.getWidth()/2,(getHeight()/2));
+		}else {
+			println("Congratulation");
+			GLabel line = new GLabel("Congratulation");
+			line.setFont("Times-22");
+			line.setColor(Color.RED);
+			add(line, getWidth()/2 - line.getWidth()/2,(getHeight()/2));
+		}
+	}
+	
+	private void setXYForBotomUpMove() {
+		x = x + vy;
+		if(vy > 0) {
+			y = y - vy;
+		}else {
+			y = y + vy;
+		}
 		
 	}
 	
-	private void moveBallBotomUp() {
-		double x = ball.getX();
-		double y = ball.getY();
-		while(x < WIDTH-(BALL_RADIUS) && x > 0) {
-			x = x + vy;
-			if(vy > 0) {
-				y = y - vy;
-			}else {
-				y = y + vy;
-			}
-			
-			ball.setLocation(x, y);
-			pause(80);
+	private void setXYForTopDownMove() {
+		x = x + vy;
+		if(vy < 0) {
+			y = y - vy;
+		}else{
+			y = y + vy;
 		}
 	}
 	
-	private void moveBallTopDown() {
-		double x = ball.getX();
-		double y = ball.getY();
-		while(x < WIDTH-(BALL_RADIUS) && x > 0) { 
-			x = x + vy;
-			if(vy < 0) {
-				y = y - vy;
-			}else {
-				y = y + vy;
+	private void checkForCollision() {
+		if(getElementAt(x,y + BALL_RADIUS) == paddle) {//paddle hitting
+			bottomUpMode = true;
+			topDownMode = false;
+		}else if(getElementAt(x,y) != null) { //brick hitting
+			println("brick hit Count = " + count);
+			brickHit = true;
+			//removing the hitted brick
+			GObject collider = getElementAt(x,y);
+			if(collider != paddle) {
+				remove(collider);
+				count++;
 			}
-			
-			ball.setLocation(x, y);
-			pause(80);
 		}
+		
+		//top wall checking
+		if(y <= 0) {
+			bottomUpMode = false;
+			topDownMode = true;
+		}
+	}
+	
+	private void bounceIt() {
+		vy = -vy;
+		RightWallHit = false;
+		leftWallHit = false;
+	}
+	
+	private void checkBallPosition() {
+		if(x == 0.0) { // checks the ball is on the Left wall or not
+			x = x + 3.0;
+			leftWallHit = true;
+		}else if(x == 396.0) {//checks the ball is on the Right wall or not
+			x = x - 3.0;
+			RightWallHit = true;
+		}
+
 	}
 	
 	private void setUpGame() {
