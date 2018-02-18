@@ -96,12 +96,10 @@ public class BreakOut extends GraphicsProgram {
 			checkForCollision();
 			bounceTheBall();
 			
+			printEndingMessage();
 			if(y > HEIGHT) {
-				printEndingMessage();
 				return;
-			}
-			if(count == 100) {
-				printEndingMessage();
+			}else if(count == 100) {
 				return;
 			}
 		}
@@ -132,7 +130,7 @@ public class BreakOut extends GraphicsProgram {
 			line.setFont("Times-22");
 			line.setColor(Color.RED);
 			add(line, getWidth()/2 - line.getWidth()/2,(getHeight()/2));
-		}else {
+		}else if(count == 100){
 			println("Congratulation");
 			GLabel line = new GLabel("Congratulation");
 			line.setFont("Times-22");
