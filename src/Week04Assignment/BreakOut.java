@@ -41,15 +41,30 @@ public class BreakOut extends GraphicsProgram {
 	private static final int NTURNS = 3;
 	
 	GRect paddle;
+	GOval ball;
 	
 	public void run() {
 		setUpGame();
-		addMouseListeners();
+		
 	}
 	
 	private void setUpGame() {
+		/* Sets up the bricks*/
 		setUpBricks();
+		
+		/* Create the paddle to bouch the ball*/
 		createPaddle();
+		addMouseListeners();
+		
+		/* Create the ball*/
+		createBall();
+	}
+	
+	private void createBall() {
+		ball = new GOval((WIDTH/2) - BALL_RADIUS, ( HEIGHT/2) - BALL_RADIUS, BALL_RADIUS, BALL_RADIUS);
+		ball.setFilled(true);
+		ball.setColor(Color.BLACK);
+		add(ball);
 	}
 	/**Method: mouseMoved
 	 * 
@@ -95,13 +110,13 @@ public class BreakOut extends GraphicsProgram {
 		case 3:
 			return Color.ORANGE;
 		case 4:
-			return Color.YELLOW;
+			return Color.GREEN;
 		case 5:
-			return Color.YELLOW;
+			return Color.GREEN;
 		case 6:
-			return Color.GREEN;
+			return Color.YELLOW;
 		case 7:
-			return Color.GREEN;
+			return Color.YELLOW;
 		case 8:
 			return Color.CYAN;
 		case 9:
