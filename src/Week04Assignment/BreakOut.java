@@ -1,6 +1,6 @@
 package Week04Assignment;
 /* File: Breakout.java
-* -------------------
+* --------------------------------
 * This file will eventually implement the game of Breakout.
 */
 import acm.graphics.*;
@@ -52,16 +52,24 @@ public class BreakOut extends GraphicsProgram {
 	boolean brickHit = false;
 	int count;
 	
+	/* Program starts here*/
 	public void run() {
 		setUpGame();
 		playGame();
 	}
 	
+	/* Method: playGame*/
+	/* Initialize the start of game
+	 * and then control it
+	 */
 	private void playGame() {
 		vx =  rgen.nextDouble(-3.0, +3.0);
 		startGame();
 	}
 	
+	/* Method setValocity*/
+	/* Set initial velocity of the ball movement
+	 */
 	private void setValocity() {
 		/** Initial moving of the ball*/
 		if(vx > 0) {//checks the vx is negative or positive, if positiv then the velocity should be positive
@@ -71,52 +79,65 @@ public class BreakOut extends GraphicsProgram {
 		}
 	}
 	
-	
+	/* Method: startGame*/
+	/*Start the game and controls it
+	 * until game is over
+	 */
 	private void startGame() {
 		x = ball.getX();
 		y = ball.getY();
 		setValocity();
-		int time = 20;
-		count = 0;
+		int time = 20; //to set up speed of ball in different level
+		count = 0; //counts the hit of bricks
+		
 		/**Moves the ball towerds the wall or paddle*/
 		while(x < WIDTH-(BALL_RADIUS) && x > 0 && y < HEIGHT) { 
-			if(bottomUpMode) {
+			if(bottomUpMode) { //When ball gose from bottom to top
 				setXYForBotomUpMove();
-			}else if(topDownMode){
+			}else if(topDownMode){ //When ball gose from top to bottom
 				setXYForTopDownMove();
 			}
 			
-			ball.setLocation(x, y);
+			/*Finaly sets the balls updated location*/
+			ball.setLocation(x, y);   
 			pause(time);
+			/*Sets the time for pause in different level*/
 			time = setTime(time);
 			
+			/* Checks the ball is hitting on the right wall or the leftWall*/
 			checkBallPosition();
+			/* Checks the ball is hitting on any bricks or The paddle*/
 			checkForCollision();
+			/* If ball hits any wall or bricks or paddle, it bounce the ball with reverse valocity*/
 			bounceTheBall();
 			
+			/*If the game turns out to the end state then its print the ending messege*/
 			printEndingMessage();
-			if(count == 100) {
+			if(count == 100) { // Finally breaks the loop when no more bricks to hit
 				return;
 			}
 		}
 	}
 	
+	/* Method : setTime*/
+	/* Change the different level
+	 */
 	private int setTime(int time) {
-		if(count == 20) {
+		if(count == 20) { //When 20 bricks are hitted,game gose to 2nd level
 			if(time >10) {
 				time --;
 			}
-		}else if(count == 50) {
+		}else if(count == 50) { //when 50 bricks are hitted, game gose to 3rd level
 			if(time > 9) {
 				time = 8;
 			}
 			ball.setColor(Color.RED);
-		}else if(count == 80) {
+		}else if(count == 80) { // When 80 bricks are hitted, game gose to 4th level
 			if(time >= 8) {
 				time = 7;
 			}
 			ball.setColor(Color.BLUE);
-		}else if(count == 90) {
+		}else if(count == 90) { // Finally when 90 bricks are hitted, game gose to last level
 			if(time >= 7) {
 				time = 6;
 			}
@@ -125,17 +146,22 @@ public class BreakOut extends GraphicsProgram {
 		return time;
 	}
 	
+	/* Method : bounceTheBall*/
+	/* Bounch the ball with revrse valocity
+	 * when it hitts any wall, bricks or the paddle
+	 */
 	private void bounceTheBall() {
 		if(RightWallHit) {
 			bounceIt();
 		}else if(leftWallHit) {
 			bounceIt();
 		}else if(brickHit) {
-			if(bottomUpMode) {
+			
+			if(bottomUpMode) { //When brick hit happens and ball in bottom to Up mode it should imediately chenge the direction
 				bottomUpMode = false;
 				topDownMode = true;
 				brickHit = false;
-			}else {
+			}else { //When brick hit happens and ball in top to Bottom mode it should imediately chenge the direction
 				bottomUpMode = true;
 				topDownMode = false;
 				brickHit = false;
@@ -143,14 +169,19 @@ public class BreakOut extends GraphicsProgram {
 		}
 	}
 	
+	/* Method: printEndingMessage*/
+	/* Decide whether player wins or lose
+	 * and then print a messege
+	 */
 	private void printEndingMessage() {
-		if(y > HEIGHT ) {
+		if(y > HEIGHT ) { //Checks the game out of the window or not, if so then game is in End State and Player Loses
 			println("Game Over y = " + y);
 			GLabel line = new GLabel("Game Over");
 			line.setFont("Times-22");
 			line.setColor(Color.RED);
 			add(line, getWidth()/2 - line.getWidth()/2,(getHeight()/2));
-		}else if(count == 100){
+			
+		}else if(count == 100){ //Checks the player Hitts all bicks or not, if so then game is in End State and Player Wins
 			println("Congratulation");
 			GLabel line = new GLabel("Congratulation");
 			line.setFont("Times-22");
@@ -159,32 +190,46 @@ public class BreakOut extends GraphicsProgram {
 		}
 	}
 	
+	/* Method: setXYForBotomUpMove*/
+	/* Change the value of x and y
+	 * so that ball can move Botom to Up
+	 */
 	private void setXYForBotomUpMove() {
 		x = x + vy;
-		if(vy > 0) {
+		if(vy > 0) { // when vy positive the value of y should be decrease for bttom to up move
 			y = y - vy;
-		}else {
+		}else { // when vy negative the value of y should be increase for bttom to up move
 			y = y + vy;
 		}
-		
 	}
 	
+	/* Method: setXYForTopDownMove*/
+	/* Change the value of x and y
+	 * so that ball can move top to Down
+	 */
 	private void setXYForTopDownMove() {
 		x = x + vy;
-		if(vy < 0) {
+		if(vy < 0) { // when vy negative the value of y should be decrease for top to down move
 			y = y - vy;
-		}else{
+		}else{ // when vy positive the value of y should be increase for top to down move
 			y = y + vy;
 		}
 	}
 	
+	/* Method: checkForCollision**/
+	/* Checks any hit occurs or not,
+	 * if brick hit occurs then it change the balls move direction
+	 * and delete the brick
+	 */
 	private void checkForCollision() {
 		if(getElementAt(x,y + BALL_RADIUS) == paddle) {//paddle hitting
 			bottomUpMode = true;
 			topDownMode = false;
+			
 		}else if(getElementAt(x,y) != null) { //brick hitting
 			println("brick hit Count = " + count);
 			brickHit = true;
+			
 			//removing the hitted brick
 			GObject collider = getElementAt(x,y);
 			if(collider != paddle) {
@@ -201,7 +246,7 @@ public class BreakOut extends GraphicsProgram {
 	}
 	
 	private void bounceIt() {
-		vy = -(vy);
+		vy = -(vy); //reverse the valocity
 		RightWallHit = false;
 		leftWallHit = false;
 	}
@@ -217,6 +262,10 @@ public class BreakOut extends GraphicsProgram {
 
 	}
 	
+	/* Method: setUpGame */
+	/* Set up the game window with bricks, 
+	 * ball and paddle
+	 */
 	private void setUpGame() {
 		/* Sets up the bricks*/
 		setUpBricks();
@@ -233,11 +282,12 @@ public class BreakOut extends GraphicsProgram {
 		ball = new GOval((WIDTH/2) - BALL_RADIUS, ( HEIGHT/2) - BALL_RADIUS, BALL_RADIUS, BALL_RADIUS);
 		ball.setFilled(true);
 		ball.setColor(Color.BLACK);
+		
 		add(ball);
 	}
-	/**Method: mouseMoved
-	 * 
-	 * Gets triggered when the mouse enters the game window
+	
+	/* Method: mouseMoved */
+	/* Gets triggered when the mouse enters the game window
 	 * and move in the window
 	 */
 	public void mouseMoved(MouseEvent e) {
@@ -245,9 +295,9 @@ public class BreakOut extends GraphicsProgram {
 			paddle.setLocation(e.getX(), HEIGHT - PADDLE_Y_OFFSET);
 		}
 	}
-	/** Method: createPaddle
-	 * 
-	 * Creates the paddle
+	
+	/* Method: createPaddle */
+	/* Creates the paddle
 	 */
 	private void createPaddle() {
 		paddle = new GRect((WIDTH - PADDLE_WIDTH)/2, HEIGHT - PADDLE_Y_OFFSET, PADDLE_WIDTH, PADDLE_HEIGHT);
@@ -264,9 +314,9 @@ public class BreakOut extends GraphicsProgram {
 			createRowOfBricks(getColor(i), BRICK_Y_OFFSET + i * (BRICK_HEIGHT + BRICK_SEP));
 		}
 	}
-	/*Method: getColor 
-	 * 
-	 * returns appropriate color for each row
+	
+	/* Method: getColor */
+	/* returns appropriate color for each row
 	 */
 	private Color getColor(int rowNum) {
 		switch(rowNum) {
@@ -295,9 +345,8 @@ public class BreakOut extends GraphicsProgram {
 		}
 	}
 	
-	/*Method: createRowOfBricks
-	* 
-	* Create a row of bricks
+	/* Method: createRowOfBricks*/
+	/* Create a row of bricks
 	*/
 	private void createRowOfBricks(Color c, int y) {
 		/* Keeps track of the position of the breick in x axies*/
