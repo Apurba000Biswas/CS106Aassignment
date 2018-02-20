@@ -176,17 +176,17 @@ public class BreakOut extends GraphicsProgram {
 	private void printEndingMessage() {
 		if(y > HEIGHT ) { //Checks the game out of the window or not, if so then game is in End State and Player Loses
 			println("Game Over y = " + y);
-			GLabel line = new GLabel("Game Over");
-			line.setFont("Times-22");
-			line.setColor(Color.RED);
-			add(line, getWidth()/2 - line.getWidth()/2,(getHeight()/2));
+			GLabel messege = new GLabel("Game Over");
+			messege.setFont("Times-22");
+			messege.setColor(Color.RED);
+			add(messege, getWidth()/2 - messege.getWidth()/2,(getHeight()/2));
 			
 		}else if(count == 100){ //Checks the player Hitts all bicks or not, if so then game is in End State and Player Wins
 			println("Congratulation");
-			GLabel line = new GLabel("Congratulation");
-			line.setFont("Times-22");
-			line.setColor(Color.RED);
-			add(line, getWidth()/2 - line.getWidth()/2,(getHeight()/2));
+			GLabel messege = new GLabel("Congratulation");
+			messege.setFont("Times-22");
+			messege.setColor(Color.RED);
+			add(messege, getWidth()/2 - messege.getWidth()/2,(getHeight()/2));
 		}
 	}
 	
