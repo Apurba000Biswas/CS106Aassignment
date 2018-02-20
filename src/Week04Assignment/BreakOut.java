@@ -76,10 +76,10 @@ public class BreakOut extends GraphicsProgram {
 		x = ball.getX();
 		y = ball.getY();
 		setValocity();
-		int time = 80;
+		int time = 20;
 		count = 0;
 		/**Moves the ball towerds the wall or paddle*/
-		while(x < WIDTH-(BALL_RADIUS) && x > 0) { 
+		while(x < WIDTH-(BALL_RADIUS) && x > 0 && y < HEIGHT) { 
 			if(bottomUpMode) {
 				setXYForBotomUpMove();
 			}else if(topDownMode){
@@ -88,21 +88,41 @@ public class BreakOut extends GraphicsProgram {
 			
 			ball.setLocation(x, y);
 			pause(time);
-			if(time > 10) {
-				time --;
-			}
+			time = setTime(time);
 			
 			checkBallPosition();
 			checkForCollision();
 			bounceTheBall();
 			
 			printEndingMessage();
-			if(y > HEIGHT) {
-				return;
-			}else if(count == 100) {
+			if(count == 100) {
 				return;
 			}
 		}
+	}
+	
+	private int setTime(int time) {
+		if(count == 20) {
+			if(time >10) {
+				time --;
+			}
+		}else if(count == 50) {
+			if(time > 9) {
+				time = 8;
+			}
+			ball.setColor(Color.RED);
+		}else if(count == 80) {
+			if(time >= 8) {
+				time = 7;
+			}
+			ball.setColor(Color.BLUE);
+		}else if(count == 90) {
+			if(time >= 7) {
+				time = 6;
+			}
+			ball.setColor(Color.MAGENTA);
+		}
+		return time;
 	}
 	
 	private void bounceTheBall() {
@@ -124,8 +144,8 @@ public class BreakOut extends GraphicsProgram {
 	}
 	
 	private void printEndingMessage() {
-		if(y > HEIGHT) {
-			println("Game Over");
+		if(y > HEIGHT ) {
+			println("Game Over y = " + y);
 			GLabel line = new GLabel("Game Over");
 			line.setFont("Times-22");
 			line.setColor(Color.RED);
@@ -181,7 +201,7 @@ public class BreakOut extends GraphicsProgram {
 	}
 	
 	private void bounceIt() {
-		vy = -vy;
+		vy = -(vy);
 		RightWallHit = false;
 		leftWallHit = false;
 	}
